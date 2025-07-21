@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 type GetRoomsAPIResponse = Array<{
   id: string;
@@ -20,9 +20,9 @@ type GetRoomsAPIResponse = Array<{
 
 export function RoomList() {
   const { data, isLoading } = useQuery({
-    queryKey: ['get-rooms'],
+    queryKey: ["get-rooms"],
     queryFn: async () => {
-      const response = await fetch('http://localhost:3333/rooms');
+      const response = await fetch("http://localhost:3333/rooms");
       const result: GetRoomsAPIResponse = await response.json();
       return result;
     },
@@ -46,7 +46,7 @@ export function RoomList() {
             <Link
               className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent"
               key={room.id}
-              to={'/rooms/&{room.id}'}
+              to={`/room/${room.id}`}
             >
               <div className="flex-1 flex-col gap-1">
                 <h3 className="font-medium ">{room.name}</h3>
