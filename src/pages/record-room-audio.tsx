@@ -108,6 +108,7 @@ export function RecordRoomAudio() {
       recorder.current?.stop();
       createRecorder(audioStream);
     }, 5000);
+    ///Podemos mudar a quantidade de tempo de gravação aqui
   }
 
   if (!params.roomId) {
@@ -115,6 +116,7 @@ export function RecordRoomAudio() {
   }
 
   return (
+    //Melhorar o select com SHADCN
     <div className="flex h-screen flex-col items-center justify-center gap-3">
       {/* Seleção dos dispositivos de entrada */}
       <div>
