@@ -1,6 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ArrowBigLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 
 const isRecordingSupported =
   !!navigator.mediaDevices &&
@@ -108,7 +119,6 @@ export function RecordRoomAudio() {
       recorder.current?.stop();
       createRecorder(audioStream);
     }, 5000);
-    ///Podemos mudar a quantidade de tempo de gravação aqui
   }
 
   if (!params.roomId) {
@@ -116,31 +126,53 @@ export function RecordRoomAudio() {
   }
 
   return (
-    //Melhorar o select com SHADCN
-    <div className="flex h-screen flex-col items-center justify-center gap-3">
-      {/* Seleção dos dispositivos de entrada */}
-      <div>
-        <label htmlFor="audioDevice">Dispositivo de Áudio:</label>
-        <select
-          id="audioDevice"
-          value={selectedDeviceId}
-          onChange={(e) => setSelectedDeviceId(e.target.value)}
+    <div className="relative min-h-screen">
+      <Link to={`/room/${params.roomId}`} className="absolute top-6 left-10">
+        <Button
+          className="cursor-pointer hover:[#1b1718] px-4 py-2 rounded-md shadow-md"
+          variant="default"
         >
-          <option value="">Selecione...</option>
-          {audioDevices.map((d) => (
-            <option key={d.deviceId} value={d.deviceId}>
-              {d.label || `Dispositivo ${d.deviceId}`}
-            </option>
-          ))}
-        </select>
-      </div>
+          <ArrowBigLeft />
+          Voltar para a Sala
+        </Button>
+      </Link>
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <Card className="flex flex-col items-center justify-center p-6 max-w-md w-full">
+          <h1 className="text-2xl font-bold mb-4">Gravar áudio da Sala</h1>
+          <Select
+            value={selectedDeviceId}
+            onValueChange={setSelectedDeviceId}
+            disabled={!isRecordingSupported}
+          >
+            <SelectTrigger className="w-full cursor-pointer">
+              <SelectValue placeholder="Selecione um dispositivo de áudio" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Dispositivos de Áudio</SelectLabel>
+                {audioDevices.map((device) => (
+                  <SelectItem
+                    className="cursor-pointer"
+                    key={device.deviceId}
+                    value={device.deviceId}
+                  >
+                    {device.label || "Dispositivo sem nome"}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
-      {isRecording ? (
-        <Button onClick={stopRecording}>Pausar gravação</Button>
-      ) : (
-        <Button onClick={startRecording}>Gravar áudio</Button>
-      )}
-      {isRecording ? <p>Gravando...</p> : <p>Pausado</p>}
+          <Button
+            className="mt-4 w-full cursor-pointer"
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={!isRecordingSupported || !selectedDeviceId}
+          >
+            {isRecording ? "Parar Gravação" : "Iniciar Gravação"}
+          </Button>
+          {isRecording ? <p>Gravando...</p> : <p>Pausado</p>}
+        </Card>
+      </div>
     </div>
   );
 }
